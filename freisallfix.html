@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FREIS DIGITAL STORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{
+    --bg:#0b0b1a; --card:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07);
+    --violet:#6c5ce7; --pink:#fd79a8; --teal:#00cec9; --txt-dim:rgba(255,255,255,0.35);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Inter',sans-serif; background:var(--bg); color:#fff;
+    min-height:100%; display:flex; justify-content:center; align-items:flex-start;
+    padding:40px 18px calc(40px + env(safe-area-inset-bottom,0px));
+  }
+
+  #loading{
+    position:fixed; inset:0; z-index:999; background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  #loading.hide{opacity:0; visibility:hidden; pointer-events:none;}
+  .ring{
+    width:64px; height:64px; border-radius:50%; border:3px solid transparent;
+    border-top-color:var(--violet); border-right-color:var(--pink); border-bottom-color:var(--teal);
+    animation:spin 1s linear infinite; display:flex; align-items:center; justify-content:center;
+  }
+  .ring i{font-size:1.3rem; color:var(--violet); animation:pulse 1.1s ease-in-out infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+  .load-label{margin-top:18px; font-size:.65rem; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.25);}
+
+  .app{
+    max-width:440px; width:100%; background:var(--card); backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:26px;
+    padding:26px 20px 30px; box-shadow:0 20px 60px rgba(0,0,0,.6);
+    opacity:0; transform:translateY(16px); animation:appIn .55s ease .15s forwards;
+  }
+  @keyframes appIn{to{opacity:1; transform:translateY(0);}}
+
+  .header{display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:20px; text-align:center;}
+  .brand-name{font-size:1.25rem; font-weight:900; margin-top:2px; background:linear-gradient(135deg,var(--violet),var(--pink));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+  .brand-tag{font-size:.55rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.25); margin-bottom:14px;}
+
+  .hero{
+    position:relative; overflow:hidden; border-radius:18px; padding:26px 18px 20px; margin-bottom:18px;
+    background:linear-gradient(135deg, rgba(108,92,231,.12), rgba(253,121,168,.06));
+    border:1px solid var(--border); text-align:center;
+  }
+  .hero::before{
+    content:''; position:absolute; top:-45%; right:-25%; width:180px; height:180px;
+    background:radial-gradient(circle, rgba(108,92,231,.18), transparent 70%); border-radius:50%;
+  }
+  .hero-inner{position:relative; z-index:1;}
+  .hero-logo{
+    width:56px; height:56px; border-radius:16px; overflow:hidden; margin:0 auto 12px;
+    background:linear-gradient(135deg,var(--violet),var(--pink));
+    box-shadow:0 4px 14px rgba(108,92,231,.3);
+  }
+  .hero-logo img{width:100%; height:100%; object-fit:cover; display:block;}
+  .badge{
+    display:inline-block; padding:4px 14px; border-radius:30px; background:rgba(0,206,201,.1);
+    color:var(--teal); font-size:.55rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    border:1px solid rgba(0,206,201,.12); margin-bottom:10px;
+  }
+  .hero h1{font-size:1.4rem; font-weight:900; line-height:1.25;}
+  .hero h1 span{background:linear-gradient(135deg,var(--violet),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+  .hero p{font-size:.78rem; color:rgba(255,255,255,.45); line-height:1.6; max-width:300px; margin:8px auto 0;}
+
+  .links{display:flex; flex-direction:column; gap:10px;}
+  .link-btn{
+    display:flex; align-items:center; justify-content:center; gap:12px; padding:13px 15px; border-radius:14px;
+    text-decoration:none; color:#fff; border:1px solid var(--border); background:rgba(255,255,255,.04);
+    transition:transform .15s ease, background .15s ease; position:relative;
+  }
+  .link-btn:active{transform:scale(.97);}
+  .link-btn .ic{
+    width:36px; height:36px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-size:1rem; background:rgba(255,255,255,.06);
+  }
+  .link-btn .txt{text-align:center; max-width:calc(100% - 30px);}
+  .link-btn .t1{font-size:.85rem; font-weight:700;}
+  .link-btn .t2{font-size:.65rem; color:var(--txt-dim);}
+  .link-btn .arrow{position:absolute; right:15px; color:rgba(255,255,255,.15); font-size:.9rem;}
+
+  .link-btn.primary{background:linear-gradient(135deg,var(--violet),#a29bfe); border:none; box-shadow:0 4px 16px rgba(108,92,231,.25);}
+  .link-btn.primary .ic{background:rgba(255,255,255,.18);}
+  .link-btn.primary .t2{color:rgba(255,255,255,.65);}
+
+  .link-btn.wa .ic{color:#00e676;}
+  .link-btn.yt .ic{color:#ff5252;}
+  .link-btn.tg .ic{color:#54a9eb;}
+  .link-btn.tk .ic{color:#e8e8e8;}
+
+  .section-label{font-size:.6rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.2);
+    margin:18px 0 10px; padding-left:2px;}
+
+  .view{display:none;}
+  .view.active{display:block; animation:fadeUp .35s ease both;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+  .page-title{font-size:1.1rem; font-weight:800; text-align:center; margin-bottom:4px;
+    background:linear-gradient(135deg,var(--violet),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+  .page-sub{text-align:center; font-size:.7rem; color:rgba(255,255,255,.3); margin-bottom:16px;}
+  .link-btn.back{background:transparent; color:rgba(255,255,255,.4); margin-top:16px; width:100%;}
+
+  .footer{text-align:center; font-size:.55rem; color:rgba(255,255,255,.1); margin-top:20px; letter-spacing:1px;}
+
+  @media (max-width:420px){
+    .app{padding:20px 16px 26px;}
+    .hero h1{font-size:1.2rem;}
+  }
+</style>
+</head>
+<body>
+
+  <div id="loading">
+    <div class="ring"><i class="fa-brands fa-whatsapp"></i></div>
+    <div class="load-label">FREIS DIGITAL STORE</div>
+  </div>
+
+  <div class="app">
+    <div class="view active" id="viewHome">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-logo"><img src="https://files.catbox.moe/oesobu.png" alt="FREIS DIGITAL STORE" loading="lazy"></div>
+        <div class="brand-name">FREIS DIGITAL STORE</div>
+        <div class="brand-tag">Platform digital terbaik & terlengkap</div>
+        <div class="badge">⚡ Fast Response</div>
+        <p>Pusat penyedia berbagai layanan digital terbaik yang siap membantu segala kebutuhan anda — proses cepat.</p>
+      </div>
+    </div>
+
+    <div class="links">
+       <a class="link-btn primary" href="https://bot.freisdstore.xyz" target="_blank" rel="noopener">
+         <span class="txt">
+             <div class="t1">Buat Bot WhatsApp Sekarang!</div>
+         </span>
+         <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+       </a>
+
+       <a class="link-btn primary" href="https://freisdstore.xyz" target="_blank" rel="noopener">
+         <span class="txt">
+             <div class="t1">Platform penyedia layanan digital</div>
+         </span>
+         <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+       </a>
+
+      <button type="button" class="link-btn primary" onclick="showView('viewGroup')">
+        <span class="txt">
+          <div class="t1">Group WhatsApp</div>
+        </span>
+        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+      </button>
+
+      <button type="button" class="link-btn primary" onclick="showView('viewChannel')">
+        <span class="txt">
+          <div class="t1">Saluran WhatsApp</div>
+        </span>
+        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+      </button>
+    </div>
+
+    <div class="section-label">Sosial Media</div>
+    <div class="links">
+      <a class="link-btn tk" href="https://tiktok.com/@bot.freisdstore.xyz" target="_blank" rel="noopener">
+        <span class="txt"><div class="t1">TikTok</div></span>
+        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+      </a>
+
+      <a class="link-btn tg" href="https://t.me/FreisDigitalStore" target="_blank" rel="noopener">
+        <span class="txt"><div class="t1">Telegram</div></span>
+        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+      </a>
+
+      <button type="button" class="link-btn" onclick="showView('viewContact')">
+        <span class="txt"><div class="t1">Hubungi Owner</div></span>
+        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+      </button>
+    </div>
+
+    <div class="footer">© 2026 FREIS DIGITAL STORE</div>
+    </div>
+
+    <div class="view" id="viewGroup">
+      <div class="page-title">Group WhatsApp</div>
+      <div class="page-sub">Join dan pantau update informasinya.</div>
+      <div class="links">
+        <a class="link-btn wa" href="https://chat.whatsapp.com/GZSzuTinIsFG94IsjAj2cU" target="_blank" rel="noopener">
+          <span class="txt"><div class="t1">FREIS DIGITAL STORE 1</div></span>
+          <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
+        <a class="link-btn wa" href="https://chat.whatsapp.com/EX925TXpXA448rcva0AOnh" target="_blank" rel="noopener">
+          <span class="txt"><div class="t1">FREIS DIGITAL STORE 2</div></span>
+          <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
+        <a class="link-btn wa" href="https://chat.whatsapp.com/FSYANdEZkPy4qkr6T7SUe9" target="_blank" rel="noopener">
+          <span class="txt"><div class="t1">Wabify Community</div></span>
+          <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
+      </div>
+      <button type="button" class="link-btn back" onclick="showView('viewHome')">
+        <span class="txt"><div class="t1">Kembali</div></span>
+      </button>
+    </div>
+
+    <div class="view" id="viewChannel">
+      <div class="page-title">Saluran WhatsApp</div>
+      <div class="page-sub">Follow dan pantau update terbarunya.</div>
+      <div class="links">
+        <a class="link-btn wa" href="https://whatsapp.com/channel/0029VbCU4we1CYoJZdpcfi36" target="_blank" rel="noopener">
+          <span class="txt"><div class="t1">FREIS DIGITAL STORE OFFICIAL</div></span>
+          <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
+        <a class="link-btn wa" href="https://whatsapp.com/channel/0029VbDWtpb59PwZVzmLUW1p" target="_blank" rel="noopener">
+          <span class="txt"><div class="t1">Wabify Information</div></span>
+          <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
+      </div>
+      <button type="button" class="link-btn back" onclick="showView('viewHome')">
+        <span class="txt"><div class="t1">Kembali</div></span>
+      </button>
+    </div>
+
+    <div class="view" id="viewContact">
+      <div class="page-title">Hubungi Owner</div>
+      <div class="page-sub">Pilih media untuk menghubungi owner.</div>
+      <div class="links">
+        <a class="link-btn wa" href="https://wa.me/6288975319241" target="_blank" rel="noopener">
+          <span class="txt"><div class="t1">WhatsApp Owner</div></span>
+          <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
+        <a class="link-btn tg" href="https://t.me/FreisCracks" target="_blank" rel="noopener">
+          <span class="txt"><div class="t1">Telegram Owner</div></span>
+          <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+        </a>
+      </div>
+      <button type="button" class="link-btn back" onclick="showView('viewHome')">
+        <span class="txt"><div class="t1">Kembali</div></span>
+      </button>
+    </div>
+  </div>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loading').classList.add('hide');
+    }, 450);
+  });
+
+  function showView(id){
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
